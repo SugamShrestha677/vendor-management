@@ -13,8 +13,7 @@ export default function Header({ onMenuClick }) {
   };
 
   return (
-    <header className="bg-white shadow-md px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
-      {/* Left side: menu button and title */}
+    <header className="bg-white shadow-md px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center relative z-50">
       <div className="flex items-center gap-2 sm:gap-4">
         <button
           onClick={onMenuClick}
@@ -28,9 +27,7 @@ export default function Header({ onMenuClick }) {
         </h1>
       </div>
 
-      {/* Right side: user info and action buttons */}
       <div className="flex items-center gap-4 sm:gap-6">
-        {/* User details - hidden on small screens */}
         <div className="hidden sm:block text-right">
           <p className="font-semibold text-gray-800 text-sm sm:text-base">
             {user?.firstName} {user?.lastName}
@@ -38,7 +35,6 @@ export default function Header({ onMenuClick }) {
           <p className="text-xs sm:text-sm text-gray-600 capitalize">{user?.role}</p>
         </div>
 
-        {/* Action buttons */}
         <div className="flex gap-2 sm:gap-4">
           <button
             onClick={() => navigate('/profile')}
