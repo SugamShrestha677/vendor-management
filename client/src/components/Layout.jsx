@@ -21,7 +21,7 @@ export default function Layout({ children }) {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-teal-950">
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-950">
       <Sidebar open={sidebarOpen} onLinkClick={closeSidebarMobile} />
 
       {/* Backdrop for mobile */}
