@@ -28,7 +28,7 @@ export default function RequestsPage() {
     <Layout>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-800">Purchase Requests</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Purchase Requests</h1>
           <button
             onClick={() => navigate('/requests/create')}
             className="btn-primary"
@@ -37,15 +37,15 @@ export default function RequestsPage() {
           </button>
         </div>
 
-        <div className="card">
-          <div className="mb-6 flex gap-4">
+        <div className="card dark:bg-dark dark:text-white">
+          <div className="mb-6 flex gap-4 ">
             <select
               value={status}
               onChange={(e) => {
                 setStatus(e.target.value)
                 handlePageChange(1)
               }}
-              className="input-field w-48"
+              className="input-field w-48 dark:bg-slate-800 dark:text-white"
             >
               <option value="">All Status</option>
               <option value="draft">Draft</option>
@@ -60,7 +60,7 @@ export default function RequestsPage() {
           {loading ? (
             <div className="text-center py-8">Loading...</div>
           ) : requests.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">No requests found</div>
+            <div className="text-center py-8 text-gray-500 dark:text-white">No requests found</div>
           ) : (
             <>
               <div className="overflow-x-auto">
