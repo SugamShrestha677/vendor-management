@@ -23,24 +23,24 @@ export default function VendorsPage() {
     <Layout>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-800">Vendors</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Vendors</h1>
         </div>
 
-        <div className="card">
+        <div className="card dark:bg-dark dark:text-white">
           <div className="mb-6">
             <input
               type="text"
               placeholder="Search vendors..."
-              className="input-field"
+              className="input-field dark:bg-slate-800 dark:text-white"
             />
           </div>
 
           {loading ? (
             <div className="text-center py-8">Loading vendors...</div>
           ) : vendors.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">No vendors found</div>
+            <div className="text-center py-8 text-gray-500 dark:text-white">No vendors found</div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 dark:text-white">
               {vendors.map(vendor => (
                 <div key={vendor._id} className="border rounded-lg p-4 hover:shadow-lg transition">
                   <h3 className="text-lg font-bold">{vendor.companyName}</h3>
