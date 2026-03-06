@@ -64,28 +64,28 @@ export default function ProfilePage() {
   return (
     <Layout>
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-800">My Profile</h1>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">My Profile</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Profile Summary */}
-          <div className="card">
-            <h2 className="text-xl font-bold mb-4">Profile Summary</h2>
+          <div className="card dark:bg-dark dark:text-white">
+            <h2 className="text-xl font-bold mb-4 ">Profile Summary</h2>
             <div className="space-y-4">
               <div>
-                <p className="text-gray-600 text-sm">Name</p>
+                <p className="text-gray-600 dark:text-white text-sm">Name</p>
                 <p className="font-semibold">{user?.firstName} {user?.lastName}</p>
               </div>
               <div>
-                <p className="text-gray-600 text-sm">Email</p>
+                <p className="text-gray-600 dark:text-white text-sm">Email</p>
                 <p className="font-semibold">{user?.email}</p>
               </div>
               <div>
-                <p className="text-gray-600 text-sm">Role</p>
+                <p className="text-gray-600 dark:text-white text-sm">Role</p>
                 <p className="font-semibold capitalize">{user?.role}</p>
               </div>
               {user?.role !== 'vendor' && (
                 <div>
-                  <p className="text-gray-600 text-sm">Department</p>
+                  <p className="text-gray-600 dark:text-white text-sm">Department</p>
                   <p className="font-semibold">{user?.department}</p>
                 </div>
               )}
@@ -94,12 +94,12 @@ export default function ProfilePage() {
 
           {/* Edit Profile and Change Password */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="card">
+            <div className="card dark:bg-dark dark:text-white">
               <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
               <form onSubmit={handleUpdateProfile} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
                       First Name
                     </label>
                     <input
@@ -107,11 +107,11 @@ export default function ProfilePage() {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
-                      className="input-field"
+                      className="input-field dark:bg-slate-800 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
                       Last Name
                     </label>
                     <input
@@ -119,12 +119,12 @@ export default function ProfilePage() {
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
-                      className="input-field"
+                      className="input-field dark:bg-slate-800 dark:text-white"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
                     Phone Number
                   </label>
                   <input
@@ -132,7 +132,7 @@ export default function ProfilePage() {
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleChange}
-                    className="input-field"
+                    className="input-field dark:bg-slate-800 dark:text-white"
                   />
                 </div>
                 <button type="submit" className="btn-primary">
@@ -141,11 +141,11 @@ export default function ProfilePage() {
               </form>
             </div>
 
-            <div className="card">
+            <div className="card dark:bg-dark dark:text-white">
               <h2 className="text-xl font-bold mb-4">Change Password</h2>
               <form onSubmit={handleChangePassword} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
                     Current Password
                   </label>
                   <input
@@ -153,12 +153,12 @@ export default function ProfilePage() {
                     name="currentPassword"
                     value={passwordData.currentPassword}
                     onChange={handlePasswordChange}
-                    className="input-field"
+                    className="input-field dark:bg-slate-800 dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
                     New Password
                   </label>
                   <input
@@ -166,12 +166,12 @@ export default function ProfilePage() {
                     name="newPassword"
                     value={passwordData.newPassword}
                     onChange={handlePasswordChange}
-                    className="input-field"
+                    className="input-field dark:bg-slate-800 dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
                     Confirm Password
                   </label>
                   <input
@@ -179,7 +179,7 @@ export default function ProfilePage() {
                     name="confirmPassword"
                     value={passwordData.confirmPassword}
                     onChange={handlePasswordChange}
-                    className="input-field"
+                    className="input-field dark:bg-slate-800 dark:text-white"
                     required
                   />
                 </div>
