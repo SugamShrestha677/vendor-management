@@ -26,10 +26,10 @@ export default function DashboardPage() {
     <Layout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
             Welcome, {user?.firstName}!
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 dark:text-white mt-2">
             You are logged in as: <span className="font-semibold capitalize">{user?.role}</span>
           </p>
         </div>
