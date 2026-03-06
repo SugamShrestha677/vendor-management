@@ -14,13 +14,13 @@ export default function OrdersPage() {
   return (
     <Layout>
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-800">Purchase Orders</h1>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Purchase Orders</h1>
 
-        <div className="card">
+        <div className="card dark:bg-dark dark:text-white">
           {loading ? (
             <div className="text-center py-8">Loading orders...</div>
           ) : orders.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">No orders found</div>
+            <div className="text-center py-8 text-gray-500 dark:text-white">No orders found</div>
           ) : (
             <div>Orders list would appear here</div>
           )}
