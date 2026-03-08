@@ -4,6 +4,7 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 import { sendNotification } from '../utils/notificationService.js';
 import User from '../models/User.js';
 import PurchaseOrder from '../models/PurchaseOrder.js';
+import mongoose from 'mongoose';
 
 export const getPendingApprovals = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
@@ -55,6 +56,7 @@ export const getApprovalById = asyncHandler(async (req, res) => {
   });
 });
 
+
 export const approveRequest = asyncHandler(async (req, res) => {
   const { comment } = req.body;
   
@@ -77,8 +79,7 @@ export const approveRequest = asyncHandler(async (req, res) => {
   await approval.save();
 
   // Get the purchase request
-  const request = await PurchaseRequest.findById(approval.purchaseRequest._id)
-    .populate('employee');
+  const request = await PurchaseRequest.findById(approval.purchaseRequest._id);
   
   // Update request status
   request.status = 'approved';
@@ -91,77 +92,80 @@ export const approveRequest = asyncHandler(async (req, res) => {
   });
   await request.save();
 
-  // IMPORTANT: CREATE PURCHASE ORDER FOR VENDORS
-  // Check if request has preferred vendors
-  if (request.preferredVendors && request.preferredVendors.length > 0) {
-    // Create a purchase order for each preferred vendor
-    for (const vendorId of request.preferredVendors) {
-      // Generate order number
-      const orderCount = await PurchaseOrder.countDocuments();
-      const orderNumber = `PO-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(orderCount + 1).padStart(4, '0')}`;
-
-      // Format items for purchase order
-      const orderItems = request.items.map(item => ({
-        description: item.description || item.name || 'Item',
-        quantity: item.quantity,
-        unitPrice: item.unitPrice || item.price,
-        totalPrice: item.total || (item.quantity * (item.unitPrice || item.price)),
-        _id: item._id || new mongoose.Types.ObjectId()
-      }));
-
-      const purchaseOrder = await PurchaseOrder.create({
-        orderNumber,
-        purchaseRequest: request._id,
-        vendor: vendorId,
-        items: orderItems,
-        totalAmount: request.totalAmount,
-        status: 'pending',
-        expectedDeliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-        notes: `Auto-generated from approved request: ${request.requestNumber}`,
-        createdAt: new Date()
-      });
-      
-      console.log(`✅ PurchaseOrder created for vendor ${vendorId}:`, purchaseOrder.orderNumber);
-    }
-  } else {
-    console.log('⚠️ No preferred vendors for this request');
+  // ===== AUTO-CREATE PURCHASE ORDER =====
+  try {
+    // Find vendors - either from preferredVendors or all vendors
+    let vendors = [];
     
-    // Option: Find all vendors and create orders for them
-    const vendors = await User.find({ role: 'vendor' });
-    
-    for (const vendor of vendors) {
-      const orderCount = await PurchaseOrder.countDocuments();
-      const orderNumber = `PO-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(orderCount + 1).padStart(4, '0')}`;
-
-      const orderItems = request.items.map(item => ({
-        description: item.description || item.name || 'Item',
-        quantity: item.quantity,
-        unitPrice: item.unitPrice || item.price,
-        totalPrice: item.total || (item.quantity * (item.unitPrice || item.price)),
-        _id: item._id || new mongoose.Types.ObjectId()
-      }));
-
-      await PurchaseOrder.create({
-        orderNumber,
-        purchaseRequest: request._id,
-        vendor: vendor._id,
-        items: orderItems,
-        totalAmount: request.totalAmount,
-        status: 'pending',
-        expectedDeliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        notes: `Auto-generated from approved request: ${request.requestNumber}`,
-        createdAt: new Date()
+    if (request.preferredVendors && request.preferredVendors.length > 0) {
+      // Use preferred vendors
+      vendors = await User.find({ 
+        _id: { $in: request.preferredVendors },
+        role: 'vendor' 
       });
+    } else {
+      // If no preferred vendors, assign to all vendors or a default one
+      vendors = await User.find({ role: 'vendor' }).limit(1);
     }
+    
+    if (vendors.length === 0) {
+      console.log('⚠️ No vendors found to assign order');
+    } else {
+      // Create an order for each vendor
+      for (const vendor of vendors) {
+        // Generate order number
+        const orderCount = await PurchaseOrder.countDocuments();
+        const year = new Date().getFullYear();
+        const month = String(new Date().getMonth() + 1).padStart(2, '0');
+        const day = String(new Date().getDate()).padStart(2, '0');
+        const orderNumber = `PO-${year}${month}${day}-${String(orderCount + 1).padStart(4, '0')}`;
+        
+        // Format items
+        const items = request.items.map(item => ({
+          description: item.description || item.name || 'Item',
+          quantity: item.quantity,
+          unitPrice: item.unitPrice || item.price || 0,
+          totalPrice: item.total || (item.quantity * (item.unitPrice || item.price || 0)),
+          _id: item._id || new mongoose.Types.ObjectId()
+        }));
+        
+        // Create the purchase order
+        const purchaseOrder = await PurchaseOrder.create({
+          orderNumber,
+          purchaseRequest: request._id,
+          vendor: vendor._id,
+          items,
+          totalAmount: request.totalAmount,
+          status: 'pending',
+          expectedDeliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+          notes: `Auto-generated from approved request: ${request.requestNumber}`,
+          createdAt: new Date()
+        });
+        
+        console.log(`✅ PurchaseOrder created: ${orderNumber} for vendor ${vendor.companyName || vendor.email}`);
+        
+        // Send notification to vendor
+        await sendNotification({
+          type: 'new_order',
+          title: 'New Purchase Order',
+          message: `You have a new purchase order ${orderNumber} for $${request.totalAmount}`,
+          recipient: vendor._id,
+          orderId: purchaseOrder._id
+        });
+      }
+    }
+  } catch (error) {
+    console.error('❌ Error creating purchase order:', error);
+    // Don't fail the approval if order creation fails, but log it
   }
+  // ===== END OF AUTO-CREATE ORDER =====
 
   // Send notification to employee
   await sendNotification({
     type: 'request_approved',
     title: 'Request Approved',
-    message: `Your purchase request ${request.requestNumber} has been approved and orders have been sent to vendors`,
-    recipient: request.employee._id,
-    requestId: request._id
+    message: `Your purchase request ${request.requestNumber} has been approved`,
+    recipient: request.employee
   });
 
   res.status(200).json({

@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import PurchaseOrder from "../models/PurchaseOrder.js";
 import { asyncHandler } from "../middleware/errorHandler.js";
+import PurchaseRequest from "../models/PurchaseRequest.js";
 
 export const getAllVendors = asyncHandler(async (req, res) => {
   try {
@@ -133,7 +134,8 @@ export const getVendorOrders = asyncHandler(async (req, res) => {
 export const updateOrderStatus = asyncHandler(async (req, res) => {
   const { status, trackingNumber, notes } = req.body;
 
-  const order = await PurchaseOrder.findById(req.params.orderId);
+  const order = await PurchaseOrder.findById(req.params.orderId)
+    .populate('purchaseRequest'); // Populate the associated request
 
   if (!order) {
     return res.status(404).json({ message: "Order not found" });
@@ -145,12 +147,24 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
       .json({ message: "Not authorized to update this order" });
   }
 
+  // Update order status
   order.status = status;
   if (trackingNumber) order.trackingNumber = trackingNumber;
   if (notes) order.notes = notes;
 
   if (status === "delivered") {
     order.actualDeliveryDate = new Date();
+    
+    // ALSO UPDATE THE PURCHASE REQUEST STATUS
+    if (order.purchaseRequest) {
+      const request = await PurchaseRequest.findById(order.purchaseRequest._id);
+      if (request) {
+        request.status = "delivered"; // or "completed"
+        request.deliveredAt = new Date();
+        await request.save();
+        console.log(`✅ Request ${request.requestNumber} marked as delivered`);
+      }
+    }
   }
 
   await order.save();
