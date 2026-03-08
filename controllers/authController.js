@@ -10,35 +10,85 @@ const generateToken = (id) => {
   });
 };
 
+// In authController.js
 export const register = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, password, role, department, companyName, vendorCategories } = req.body;
+  try {
+    console.log('Registration request body:', req.body);
+    
+    const { firstName, lastName, email, password, role, department, companyName, vendorCategories, vendorRegistrationNumber } = req.body;
 
-  let user = await User.findOne({ email });
-  if (user) {
-    return res.status(400).json({ message: 'User already exists' });
+    // Check if user exists
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Prepare user data
+    const userData = {
+      firstName,
+      lastName,
+      email,
+      password,
+      role,
+      isVerified: false
+    };
+
+    // Add role-specific fields
+    if (role === 'vendor') {
+      if (!companyName) {
+        return res.status(400).json({ message: 'Company name is required for vendors' });
+      }
+      if (!vendorRegistrationNumber) {
+        return res.status(400).json({ message: 'Vendor registration number is required' });
+      }
+      
+      userData.companyName = companyName;
+      userData.vendorRegistrationNumber = vendorRegistrationNumber;
+      
+      // Handle vendorCategories - ensure it's an array
+      if (vendorCategories) {
+        userData.vendorCategories = Array.isArray(vendorCategories) 
+          ? vendorCategories 
+          : [vendorCategories].filter(Boolean);
+      }
+      
+      // department is not needed for vendors
+      delete userData.department;
+    } else {
+      if (department) {
+        userData.department = department;
+      }
+    }
+
+    console.log('Creating user with data:', userData);
+
+    user = new User(userData);
+    await user.save();
+
+    const token = generateToken(user._id);
+
+    res.status(201).json({
+      success: true,
+      token,
+      user: user.toJSON()
+    });
+  } catch (error) {
+    console.error('Registration error details:', error);
+    
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ 
+        success: false, 
+        message: messages.join(', ') 
+      });
+    }
+    
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Registration failed' 
+    });
   }
-
-  user = new User({
-    firstName,
-    lastName,
-    email,
-    password,
-    role,
-    department,
-    companyName,
-    vendorCategories,
-    isVerified: false
-  });
-
-  await user.save();
-
-  const token = generateToken(user._id);
-
-  res.status(201).json({
-    success: true,
-    token,
-    user: user.toJSON()
-  });
 });
 
 export const login = asyncHandler(async (req, res) => {
