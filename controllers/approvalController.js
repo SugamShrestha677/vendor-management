@@ -8,6 +8,8 @@ export const getPendingApprovals = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const skip = (page - 1) * limit;
 
+  console.log('Getting pending approvals for manager:', req.user._id);
+
   const approvals = await Approval.find({
     manager: req.user._id,
     status: 'pending'
@@ -18,10 +20,15 @@ export const getPendingApprovals = asyncHandler(async (req, res) => {
     .limit(limit * 1)
     .skip(skip);
 
+  console.log('Found approvals:', approvals.length);
+  console.log('Approvals data:', JSON.stringify(approvals, null, 2));
+
   const total = await Approval.countDocuments({
     manager: req.user._id,
     status: 'pending'
   });
+
+  console.log('Total pending:', total);
 
   res.status(200).json({
     success: true,

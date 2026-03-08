@@ -2,7 +2,9 @@ import PurchaseRequest from '../models/PurchaseRequest.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { sendNotification } from '../utils/notificationService.js';
 import { generateUniqueNumber } from '../utils/generateId.js';
-
+import Approval from '../models/Approval.js';
+// You probably have:
+import User from '../models/User.js';  // Make sure this line exists!
 export const createRequest = asyncHandler(async (req, res) => {
   const { items, department, purpose, priority, preferredVendors, budgetCode, costCenter, notes } = req.body;
 
@@ -136,7 +138,12 @@ export const deleteRequest = asyncHandler(async (req, res) => {
 });
 
 export const submitRequest = asyncHandler(async (req, res) => {
+  console.log('=== SUBMIT REQUEST START ===');
+  console.log('Request ID:', req.params.id);
+  console.log('User ID:', req.user._id);
+  
   const request = await PurchaseRequest.findById(req.params.id);
+  console.log('Found request:', request ? request._id : 'NOT FOUND');
 
   if (!request) {
     return res.status(404).json({ message: 'Request not found' });
@@ -146,20 +153,61 @@ export const submitRequest = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'Only draft requests can be submitted' });
   }
 
-  request.status = 'submitted';
+  request.status = 'pending';
+  request.submittedAt = new Date();
   await request.save();
+  console.log('✅ Request updated to pending');
 
-  await sendNotification({
-    type: 'request_submitted',
-    title: 'New Purchase Request',
-    message: `New request ${request.requestNumber} submitted for approval`,
-    recipient: 'manager'
+  console.log('🔍 Looking for manager...');
+  const manager = await User.findOne({ role: 'manager' });
+  console.log('Manager query result:', manager ? manager._id : 'NO MANAGER FOUND');
+  
+  if (!manager) {
+    console.error('❌ No manager found in database');
+    return res.status(500).json({ message: 'No manager found to assign approval' });
+  }
+  console.log('✅ Manager found:', manager._id);
+
+  console.log('📝 Creating approval document with:', {
+    purchaseRequest: request._id,
+    manager: manager._id,
+    status: 'pending'
   });
 
-  res.status(200).json({
-    success: true,
-    data: request
-  });
+  try {
+    const approval = await Approval.create({
+      purchaseRequest: request._id,
+      manager: manager._id,
+      status: 'pending',
+      requestedAt: new Date()
+    });
+    console.log('✅ Approval created successfully:', approval._id);
+
+    console.log('=== SUBMIT REQUEST END (SUCCESS) ===');
+    
+    res.status(200).json({
+      success: true,
+      data: request,
+      approval
+    });
+  } catch (error) {
+    console.error('❌ ERROR creating approval:', error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    if (error.errors) {
+      console.error('Validation errors:', error.errors);
+    }
+    
+    // Rollback the request status
+    request.status = 'draft';
+    await request.save();
+    console.log('🔄 Request status rolled back to draft');
+    
+    return res.status(500).json({ 
+      message: 'Failed to create approval', 
+      error: error.message 
+    });
+  }
 });
 
 export const getRequestsByEmployee = asyncHandler(async (req, res) => {

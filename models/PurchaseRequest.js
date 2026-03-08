@@ -60,7 +60,7 @@ const purchaseRequestSchema = new mongoose.Schema(
     ],
     status: {
       type: String,
-      enum: ['draft', 'submitted', 'approved', 'rejected', 'purchased', 'delivered', 'completed'],
+      enum: ['draft', 'submitted','pending', 'approved', 'rejected', 'purchased', 'delivered', 'completed'],
       default: 'draft'
     },
     rejectionReason: String,
