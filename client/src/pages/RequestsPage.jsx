@@ -51,9 +51,13 @@ export default function RequestsPage() {
               <option value="draft">Draft</option>
               <option value="submitted">Submitted</option>
               <option value="approved">Approved</option>
+              <option value="processing">Processing</option>
+              <option value="acknowledged">Acknowledged</option>
               <option value="rejected">Rejected</option>
-              <option value="purchased">Purchased</option>
+              <option value="purchased">Shipped</option>
+              <option value="cancelled">Completed</option>
               <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
             </select>
           </div>
 

@@ -40,7 +40,7 @@ services:
     depends_on:
       - backend
     environment:
-      VITE_API_URL: http://localhost:5000
+      VITE_API_URL: https://vendor-management-backend-yte6.onrender.com
 
 volumes:
   mongodb_data:

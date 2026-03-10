@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:5000/api/dashboard'
+const API_URL = 'https://vendor-management-backend-yte6.onrender.com/api/dashboard'
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token')
