@@ -7,7 +7,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'https://vendor-management-backend-yte6.onrender.com',
+        target: process.env.VITE_API_URL || 'http://localhost:5000',
         changeOrigin: true
       }
     }
