@@ -15,6 +15,7 @@ import OrdersPage from './pages/OrdersPage'
 import ProfilePage from './pages/ProfilePage'
 import NotFoundPage from './pages/NotFoundPage'
 import { ThemeProvider } from './context/ThemeContext'
+import LandingPage from './pages/LandingPage'
 
 function App() {
   return (
