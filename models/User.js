@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema(
     department: {
       type: String,
       required: function() {
-        return this.role !== 'vendor';
+        return this.role !== 'vendor' && this.role !== 'employee';
       }
     },
     designation: String,

@@ -32,7 +32,7 @@ const app = express();
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'https://vendor-management-v1.netlify.app/',
+  origin: [process.env.CORS_ORIGIN, process.env.CORS_LOCAL],
   credentials: true
 }));
 

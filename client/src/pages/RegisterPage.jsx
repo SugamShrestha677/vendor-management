@@ -136,6 +136,23 @@ export default function RegisterPage() {
             </select>
           </div>
 
+          {formData.role == "manager" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Department *
+              </label>
+              <input
+                type="text"
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
+                className="input-field"
+                required
+                placeholder="e.g., IT, HR, Finance"
+              />
+            </div>
+          )}
+
           {formData.role === "vendor" && (
             <>
               <div>
