@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const API_URL = 'https://vendor-management-backend-yte6.onrender.com/api/approvals'
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const API_URL = `${API_BASE}/api/approvals`
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token')
