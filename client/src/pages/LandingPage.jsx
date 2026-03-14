@@ -66,7 +66,7 @@ export default function LandingPage() {
       </div>
 
       {/* Navigation */}
-      <nav className="z-10 bg-white/80 backdrop-blur-md border-b border-gray-200/50 fixed top-0">
+      <nav className="z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50 fixed top-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo with animation */}
