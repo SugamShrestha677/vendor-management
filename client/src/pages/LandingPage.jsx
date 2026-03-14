@@ -66,7 +66,7 @@ export default function LandingPage() {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-10 bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0">
+      <nav className="z-10 bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo with animation */}
@@ -586,7 +586,7 @@ export default function LandingPage() {
               </div>
               <p className="text-sm">Smart procurement management for modern businesses.</p>
             </div>
-            {['Product', 'Company', 'Resources', 'Legal'].map((section) => (
+            {['Product', 'Company'].map((section) => (
               <div key={section}>
                 <h4 className="text-white font-semibold mb-4">{section}</h4>
                 <ul className="space-y-2">
