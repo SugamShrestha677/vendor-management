@@ -23,9 +23,10 @@ function App() {
       <AuthProvider>
         <NotificationProvider>
           <Routes>
+            <Route path="/" element={<LandingPage />} /> 
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/" element={<Navigate to="/dashboard" />} />
+            {/* <Route path="/" element={<Navigate to="/dashboard" />} /> */}
             <Route
               path="/dashboard"
               element={
