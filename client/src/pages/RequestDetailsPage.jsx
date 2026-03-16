@@ -68,7 +68,7 @@ export default function RequestDetailsPage() {
     <Layout>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-800">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
             Request {requestData.requestNumber}
           </h1>
           <button onClick={() => navigate('/requests')} className="btn-secondary">
@@ -77,44 +77,52 @@ export default function RequestDetailsPage() {
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <div className="card">
-            <p className="text-gray-600 text-sm">Status</p>
+          <div className="card dark:bg-gray-800 dark:text-white">
+            <p className="text-gray-600 dark:text-gray-400 text-sm">Status</p>
             <p className="text-xl font-bold capitalize">{requestData.status}</p>
           </div>
-          <div className="card">
-            <p className="text-gray-600 text-sm">Total Amount</p>
+          <div className="card dark:bg-gray-800 dark:text-white">
+            <p className="text-gray-600 dark:text-gray-400 text-sm">Total Amount</p>
             <p className="text-xl font-bold">${requestData.totalAmount?.toLocaleString()}</p>
           </div>
-          <div className="card">
-            <p className="text-gray-600 text-sm">Priority</p>
+          <div className="card dark:bg-gray-800 dark:text-white">
+            <p className="text-gray-600 dark:text-gray-400 text-sm">Priority</p>
             <p className="text-xl font-bold capitalize">{requestData.priority}</p>
           </div>
         </div>
 
-        <div className="card">
+        <div className="card dark:bg-gray-800 dark:text-white">
           <h2 className="text-xl font-bold mb-4">Details</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-gray-600 text-sm">Department</p>
-              <p className="font-semibold">{requestData.department}</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">Department</p>
+              <div className='px-3 py-1 mt-3 dark:bg-gray-700 dark:text-white rounded-md w-max'>
+                <p className="font-semibold">{requestData.department}</p>
+              </div>
             </div>
             <div>
-              <p className="text-gray-600 text-sm">Purpose</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">Purpose</p>
+              <div className='px-3 py-1 mt-3 dark:bg-gray-700 dark:text-white rounded-md w-max'>
               <p className="font-semibold">{requestData.purpose}</p>
+              </div>
             </div>
             <div>
-              <p className="text-gray-600 text-sm">Budget Code</p>
-              <p className="font-semibold">{requestData.budgetCode || 'N/A'}</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">Budget Code</p>
+              <div className='px-3 py-1 mt-3 dark:bg-gray-700 dark:text-white rounded-md w-max'>
+                <p className="font-semibold">{requestData.budgetCode || 'N/A'}</p>
+              </div>
             </div>
             <div>
-              <p className="text-gray-600 text-sm">Cost Center</p>
-              <p className="font-semibold">{requestData.costCenter || 'N/A'}</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">Cost Center</p>
+              <div className=' px-3 py-1 mt-3 dark:bg-gray-700 dark:text-white rounded-md w-max'>
+                <p className="font-semibold">{requestData.costCenter || 'N/A'}</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="card">
-          <h2 className="text-xl font-bold mb-4">Items</h2>
+        <div className="card dark:bg-gray-800 dark:text-white">
+          <h2 className="text-xl font-bold mb-4 dark:text-white">Items</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

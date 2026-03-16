@@ -45,7 +45,7 @@ export default function ApprovalsPage() {
             Loading...
           </div>
         ) : approvals.length === 0 ? (
-          <div className="bg-white dark:bg-teal-950 border border-gray-200 dark:border-gray-200 rounded-lg p-8 text-center text-gray-500 dark:text-gray-400">
+          <div className="bg-white dark:bg-dark border border-gray-200 dark:border-gray-200 rounded-lg p-8 text-center text-gray-500 dark:text-gray-400">
             No pending approvals
           </div>
         ) : (

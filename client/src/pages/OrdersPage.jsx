@@ -60,7 +60,7 @@ export default function OrdersPage() {
     <Layout>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-800">Purchase Orders</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Purchase Orders</h1>
           
           {/* Filter dropdown */}
           <select
@@ -81,9 +81,9 @@ export default function OrdersPage() {
         {loading ? (
           <div className="text-center py-8">Loading orders...</div>
         ) : orders.length === 0 ? (
-          <div className="bg-white border rounded-lg p-12 text-center">
-            <p className="text-gray-500 text-lg">No orders found</p>
-            <p className="text-gray-400 text-sm mt-2">
+          <div className="bg-white dark:bg-dark border rounded-lg p-12 text-center">
+            <p className="dark:text-gray-500 text-lg">No orders found</p>
+            <p className="dark:text-gray-400 text-sm mt-2">
               When requests are approved, orders will appear here
             </p>
           </div>

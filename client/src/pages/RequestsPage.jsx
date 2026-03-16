@@ -81,7 +81,7 @@ export default function RequestsPage() {
                   </thead>
                   <tbody>
                     {requests.map(req => (
-                      <tr key={req._id} className="border-b hover:bg-gray-50">
+                      <tr key={req._id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="py-3 px-4 font-semibold">{req.requestNumber}</td>
                         <td className="py-3 px-4">${req.totalAmount?.toLocaleString()}</td>
                         <td className="py-3 px-4">
